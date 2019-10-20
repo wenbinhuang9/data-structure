@@ -13,13 +13,13 @@ class TreeNode():
         self.left = None
         self.right = None
 
-#cancel the root? 
 class BST():
     def __init__(self):
         self.root = None
     def find(self, root, v):
         if not root:
             return None
+        
         if root.value == v:
             return root
         # left
@@ -37,20 +37,17 @@ class BST():
             
         if v > root.value:
             root.right = self.insert(root.right, v)
+            
         return root
     
     def maximum(self, root) :
-        if not root:
-            return None
-        if not root.right:
+        if not root or not root.right:
             return root
+        
         return self.maximum(root.right)
     
     def minimum(self, root):
-        if not root:
-            return None
-        
-        if not root.left:
+        if not root or not root.left:
             return root
         
         return self.minimum(root.left)
@@ -58,7 +55,7 @@ class BST():
 
     def predecessor(self, root, v):
         r = self.find(root, v)
-        if not root :
+        if not r:
             return None
         
         return self.maximum(r.left)
@@ -83,64 +80,35 @@ class BST():
         
     def successor(self, root, v):
         return self.successor_recursive(None, root, v)
-
-    def delete(self, root, v):
-        return self.delete_recursive(None, root, v)
-        
+  
     ## totally three cases 
-    def delete_recursive(self, parent, root, v):
+    def delete(self, root, v):
         if not root:
-            return False 
+            return root 
         
         if v < root.value:
-            return self.delete_recursive(root, root.left, v)
+            root.left = self.delete(root.left, v)
+            return root
         if v > root.value:
-            return self.delete_recursive(root, root.right, v)
+            root.right = self.delete(root.right, v)     
+            return root
+        #two case, at most one child or two child
+        # case1: one child at most
         
-        #root.value= v, begin delete, three cases
-        if not root.left and not root.right:
-            self.delete_node_no_child(parent, root)
-        elif not root.left or not root.right:
-            self.delete_node_one_child(parent, root)
-        else:
-            self.delete_node_two_child(parent, root)
-        
-        return True
-    
-    
-    def delete_node_no_child(self, parent, root):
-        if root.value > parent.value:
-            parent.right = None
-        else:
-            parent.left = None
-        
-    ## here may has some problems
-    def delete_node_one_child(self, parent, root):
-        child = root.left if root.left != None else root.right
-        if root.value > parent.value:
-            parent.right = child
-        else:
-            parent.left = child
-    
-    def delete_node_two_child(self, parent, root):
-        l = self.findSuccessor(root, root.right)
-
-        suc_parent = l[0]
-        suc = l[1]
-        
-        suc_value  = suc.value
-        if not suc.left and not suc.right:
-            self.delete_node_no_child(suc_parent, suc) 
-        else: 
-            self.delete_node_one_child(suc_parent, suc)
-        root.value = suc_value
-        
-    def findSuccessor(self, parent, root):
         if not root.left:
-            return [parent, root]
-        
-        return self.findSuccessor(root, root.left)
-
+            temp = root.right
+            root.right = None
+            return temp
+        if not root.right:
+            temp = root.left
+            root.left = None
+            return temp
+        ## has two child
+        successor = self.minimum(root.right)
+        root.value = successor.value
+        root.right = self.delete(root.right, successor.value)
+                
+        return root
 
 
 ## this is for test
@@ -211,17 +179,17 @@ if __name__ == '__main__':
      
     ## delete testt
     # detele node with two child
-    print(bst.delete(r, 5) == True)
+    bst.delete(r, 5)
     print(bst.find(r,5) == None)
     BFS(r) 
     
     #delete node with one child
-    print(bst.delete(r, 6) == True)
+    bst.delete(r, 6) 
     print(bst.find(r,6) == None)
     BFS(r) 
 
     #delete node with zero child
-    print(bst.delete(r, 2) == True)
+    bst.delete(r, 2)
     print(bst.find(r,2) == None)
     BFS(r) 
     
