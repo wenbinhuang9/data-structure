@@ -1,5 +1,5 @@
 # data-structure
-implement the data structure
+implement those data structure
 
 # BST
 implement the BST with python
