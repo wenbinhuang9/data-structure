@@ -5,7 +5,7 @@ Created on Wed Oct 16 10:27:21 2019
 
 @author: ben
 """
-import queue
+import Queue
 
 class TreeNode():
     def __init__(self, value):
@@ -124,7 +124,7 @@ def is_binary_tree(root):
 
 ## this is for test too
 def BFS(root):
-    q = queue.Queue()
+    q = Queue.Queue()
     
     q.put(root)
     while not q.empty():
@@ -133,7 +133,7 @@ def BFS(root):
             buffer.append(q.get())
         
         for i in buffer:
-            print(i.value,  end = ' ')
+            print(i.value,  ' ')
             if i.left:
                 q.put(i.left)
             if i.right:
@@ -141,7 +141,7 @@ def BFS(root):
         buffer.clear()
         print()
             
-    
+ ## todo modify the log
 if __name__ == '__main__':
     bst = BST()
     # test of insert and find
