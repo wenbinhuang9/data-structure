@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Jan  4 22:28:19 2020
-
-@author: ben
-"""
-
 class MinStack(object):
 
     def __init__(self):

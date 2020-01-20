@@ -1,6 +1,5 @@
 
 ## both directional queue
-## todo adding peak function
 class Dequeue():
     def __init__(self):
         self.capacity = 2
