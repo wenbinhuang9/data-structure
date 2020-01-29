@@ -2,6 +2,26 @@ import unittest
 from random import  randrange
 from B_tree_memory import Node, BTree
 class MyTestCase(unittest.TestCase):
+
+    class Node:
+        def __init__(self, m, is_leaf):
+            self.keys = [None] * (m)
+            self.childs = [None] * (m + 1)
+            self.is_leaf = is_leaf
+            self.key_nums = 0
+
+
+    def node_valid(self, root, m, isRoot):
+        if not root:
+            return True
+
+        for i in range(root.key_nums + 1):
+            if self.node_valid(root.childs[i], m, False) == False:
+                return False
+
+        return True if isRoot or root.key_nums + 1 >= (m)/2 else False
+
+
     def test_split_child(self):
 
         parent = Node(4, False)
@@ -46,10 +66,8 @@ class MyTestCase(unittest.TestCase):
                 self.assertEqual(key == child.keys[i] , True)
             self.assertEqual(child.key_nums == len(correct_child), True)
 
-
-
     def test_BTree_insert(self):
-        btree =BTree(4)
+        btree =BTree(5)
 
         for i in range(10000):
 
@@ -59,6 +77,7 @@ class MyTestCase(unittest.TestCase):
         for i in range(10000):
             self.assertEqual(btree.get(i) == True, True)
 
+        self.assertEqual(self.node_valid(btree.root,  5, True), True)
 
     def test_BTree_delete(self):
         btree =BTree(4)
@@ -82,6 +101,8 @@ class MyTestCase(unittest.TestCase):
 
 
         print (btree.sorted_keys())
+
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,18 +1,13 @@
 
-
-## implementation of b+ tree in memory
-
 from bisect import  bisect_right
 class Node:
     def __init__(self, m, is_leaf):
+        ## we preserve extra one slot for programming simply
         self.keys = [None] * (m)
         self.childs = [None] * (m + 1)
         self.is_leaf = is_leaf
         self.key_nums = 0
 
-
-
-## todo always makes m a even number
 class BTree:
     def __init__(self, m):
         self.root = None
@@ -24,13 +19,16 @@ class BTree:
         self.root.keys[0] = key
         self.root.key_nums += 1
 
+    def __node_full(self, node):
+        return node.key_nums == self.m - 1
+
     def insert(self, key, value):
         if self.root == None:
             self.__init_root(key)
             return
 
         ## the root keys is full
-        if self.root.key_nums == self.m - 1:
+        if self.__node_full(self.root):
             new_root = Node(self.m, False)
             new_root.childs[0] = self.root
 
@@ -39,7 +37,6 @@ class BTree:
 
         self.insertNotFull(self.root, key)
 
-    ## todo a bit complex here
     def split_child(self, parent, key_pos_in_parent, split_child):
         mid = (self.m + 1)/2 - 1
         mid_key = split_child.keys[mid]
@@ -100,15 +97,13 @@ class BTree:
 
         inserted_child = node.childs[inserted_index]
 
-        if inserted_child.key_nums == self.m - 1:
+        if self.__node_full(inserted_child):
             self.split_child(node, inserted_index, inserted_child)
 
         inserted_child = self.__find_insert_index(node, key)
 
         self.insertNotFull(node.childs[inserted_child], key)
 
-
-    ##todo change it to return the value
     def get(self, key):
         if not self.root:
             return False
